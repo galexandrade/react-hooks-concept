@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
 const todo = props => {
@@ -12,6 +12,45 @@ const todo = props => {
      */
     const [todoName, setTodoName] = useState('');
     const [todoList, setTodoList] = useState([]);
+
+    /**
+     * `useEffect` runs after every render cycle
+     */
+    useEffect(() => {
+        axios.get('https://todo-tasks-44aaf.firebaseio.com/todos.json')
+            .then(result => {
+                console.log(result);
+                const todoData = result.data;
+                let todos = [];
+                for (const key in todoData){
+                    todos.push({
+                        id: key,
+                        ...todoData[key]
+                    })
+                }
+
+                setTodoList(todos);
+            }); 
+            
+        return () => {
+            console.log('Cleanup');
+        }
+    }, [todoName]);
+
+    const mouseMoveHandler = event => {
+        console.log(event.clientX, event.clientY);
+    }
+
+    useEffect(() => {
+        console.log('Going to add EventListener');
+        document.addEventListener('mousemove', mouseMoveHandler);
+
+        //This will be executed before running a new call to `useEffect` callback
+        return () => {
+            console.log('Removing the old listener before run the `useEffect` callback again');
+            document.removeEventListener('mousemove', mouseMoveHandler);
+        }
+    });
 
     const inputChangeHandler = (event) => {
         setTodoName(event.target.value);
@@ -33,7 +72,7 @@ const todo = props => {
         <button type="button" onClick={todoAddHandler}>Add</button>
 
         <ul>
-            {todoList.map((todoItem, idx) => <li key={idx}>{todoItem}</li>)}
+            {todoList.map(todoItem => <li key={todoItem.id}>{todoItem.name}</li>)}
         </ul>
     </React.Fragment>
 };
