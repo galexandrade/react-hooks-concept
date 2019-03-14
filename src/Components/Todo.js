@@ -57,7 +57,11 @@ const todo = props => {
     }
 
     const todoAddHandler = () => {
-        setTodoList(todoList.concat(todoName));
+        setTodoList(todoList.concat({
+            id: todoList.length + 1,
+            name: todoName
+        }));
+        
         axios.post('https://todo-tasks-44aaf.firebaseio.com/todos.json', {name: todoName})
             .then(res => {
                 console.log(res);
