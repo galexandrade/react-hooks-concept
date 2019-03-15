@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useReducer } from 'react';
+import React, { useState, useEffect, useReducer, useRef } from 'react';
 import axios from 'axios';
 
 const URL = 'https://todo-tasks-44aaf.firebaseio.com/todos';
@@ -12,8 +12,13 @@ const todo = props => {
      * Only use at the top of the functional component
      * Only call `useState()` at the root level of the component
      */
-    const [todoName, setTodoName] = useState('');
-    //const [todoList, setTodoList] = useState([]);
+    //const [todoName, setTodoName] = useState(''); /** Commented due to using `useRef` hook for this purpose */
+    //const [todoList, setTodoList] = useState([]); /** Commented due to using useReducer hook for this purpose */
+
+    /**
+     * `useRef` creates a reference to be possible access some HTML element properties later 
+     */
+    const todoInputRef = useRef();
 
     // This is the reducer, pretty similar to Redux
     const todoListReducer = (state, action) => {
@@ -66,7 +71,7 @@ const todo = props => {
         return () => {
             console.log('Cleanup');
         }
-    }, [todoName]);
+    }, []);
 
     const mouseMoveHandler = event => {
         console.log(event.clientX, event.clientY);
@@ -83,11 +88,15 @@ const todo = props => {
         }
     });
 
+    /** Commented due to using `useRef` hook for this purpose
     const inputChangeHandler = (event) => {
         setTodoName(event.target.value);
     }
+    */
 
     const todoAddHandler = () => {
+        // `todoInputRef.current` gets the current HTML properties
+        let todoName = todoInputRef.current.value;
         axios.post(URL + '.json', {name: todoName})
             .then(res => {
                 console.log(res);
@@ -117,7 +126,7 @@ const todo = props => {
     }
 
     return <React.Fragment>
-        <input type="text" placeholder="Todo" onChange={inputChangeHandler} value={todoName}/>
+        <input type="text" placeholder="Todo" ref={todoInputRef}/>
         <button type="button" onClick={todoAddHandler}>Add</button>
 
         <ul>

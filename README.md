@@ -119,3 +119,25 @@ dispatch({
     payload: todoItem
 });
 ```
+
+### `useRef`
+
+`useRef` creates a reference to be possible access some HTML element properties later 
+
+Step 1 - Create the reference
+```
+const todoInputRef = useRef();
+```
+
+Step 2 - Hook it up on the HTML element you want to reference
+```
+<input type="text" placeholder="Todo" ref={todoInputRef}/>
+```
+
+Step 3 - Access properties of the referencied element
+```
+const todoAddHandler = () => {
+    // `todoInputRef.current` gets the current HTML properties
+    let todoName = todoInputRef.current.value;
+}
+```
