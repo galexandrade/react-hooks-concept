@@ -79,4 +79,43 @@ const auth = props => {
 export default auth;
 ```
 
+### `useReducer`
 
+`useReducer` is a new feature to dispatch actions and get access to its state inside a functional component
+It takes three parameters:
+* [0] - The reducer
+* [1] - The initial state
+* [0] - (Optional) the fist action
+
+It returns an array with two elements:
+* [0] - The current state
+* [1] - The dispatch function to emmit actions
+
+Step 1 - Define the reducer function
+```
+const todoListReducer = (state, action) => {
+    switch (action.type) {
+        case 'ADD':
+            return state.concat(action.payload);
+        case 'SET':
+            return action.payload;
+        case 'REMOVE':
+            return state.filter(todo => todo.id !== action.payload);
+        default:
+            return state;
+    }
+}
+```
+
+Step 2 - Call `useReducer` hook
+```
+const [todoList, dispatch] = useReducer(todoListReducer, []);
+```
+
+Step 3 - Dispatch actions
+```
+dispatch({
+    type: 'ADD',
+    payload: todoItem
+});
+```

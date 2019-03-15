@@ -1,9 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useReducer } from 'react';
 import axios from 'axios';
+
+const URL = 'https://todo-tasks-44aaf.firebaseio.com/todos';
 
 const todo = props => {
     /**
-     * `useState` is an array with two rows:
+     * `useState` returns an array with two elements:
      * [0] - The current state
      * [1] - Returns a function to manipulate the state
      * 
@@ -11,13 +13,39 @@ const todo = props => {
      * Only call `useState()` at the root level of the component
      */
     const [todoName, setTodoName] = useState('');
-    const [todoList, setTodoList] = useState([]);
+    //const [todoList, setTodoList] = useState([]);
+
+    // This is the reducer, pretty similar to Redux
+    const todoListReducer = (state, action) => {
+        switch (action.type) {
+            case 'ADD':
+                return state.concat(action.payload);
+            case 'SET':
+                return action.payload;
+            case 'REMOVE':
+                return state.filter(todo => todo.id !== action.payload);
+            default:
+                return state;
+        }
+    }
+
+    /**
+     * `useReducer` takes three parameters
+     * [0] - The reducer
+     * [1] - The initial state
+     * [0] - (Optional) the fist action
+     * 
+     * It returns an array with two elements:
+     * [0] - The current state
+     * [1] - The dispatch function to emmit actions
+     */
+    const [todoList, dispatch] = useReducer(todoListReducer, []);
 
     /**
      * `useEffect` runs after every render cycle
      */
     useEffect(() => {
-        axios.get('https://todo-tasks-44aaf.firebaseio.com/todos.json')
+        axios.get(URL + '.json')
             .then(result => {
                 console.log(result);
                 const todoData = result.data;
@@ -29,7 +57,10 @@ const todo = props => {
                     })
                 }
 
-                setTodoList(todos);
+                dispatch({
+                    type: 'SET',
+                    payload: todos
+                });
             }); 
             
         return () => {
@@ -57,18 +88,32 @@ const todo = props => {
     }
 
     const todoAddHandler = () => {
-        axios.post('https://todo-tasks-44aaf.firebaseio.com/todos.json', {name: todoName})
+        axios.post(URL + '.json', {name: todoName})
             .then(res => {
                 console.log(res);
                 const todoItem = {
                     id: res.data.name,
                     name: todoName
                 }
-                setTodoList(todoList.concat(todoItem));
+                dispatch({
+                    type: 'ADD',
+                    payload: todoItem
+                });
             })
             .catch(err => {
                 console.log(err);
             });
+    }
+
+    const todoRemoveHandler = todoId => {
+        axios.delete(`${URL}/${todoId}.json`)
+            .then(res => {
+                dispatch({
+                    type: 'REMOVE',
+                    payload: todoId
+                });
+            })
+            .catch(err => console.log(err));
     }
 
     return <React.Fragment>
@@ -76,7 +121,7 @@ const todo = props => {
         <button type="button" onClick={todoAddHandler}>Add</button>
 
         <ul>
-            {todoList.map(todoItem => <li key={todoItem.id}>{todoItem.name}</li>)}
+            {todoList.map(todoItem => <li key={todoItem.id} onClick={todoRemoveHandler.bind(this, todoItem.id)}>{todoItem.name}</li>)}
         </ul>
     </React.Fragment>
 };
