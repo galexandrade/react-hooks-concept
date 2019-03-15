@@ -141,3 +141,16 @@ const todoAddHandler = () => {
     let todoName = todoInputRef.current.value;
 }
 ```
+
+### `useMemo`
+
+`useMemo` is used to avoid unnecessary rerenders on the component
+
+It takes two parameters
+* [0] - The function  returning the element to be rendered
+* [1] - An array of all the elements that if changed will trigger the function on the first parameter
+
+In the case bellow, the `<List>` component only will be rerendered if the `todoList` is changed
+```javascript
+const listComponent = useMemo(() => <List items={todoList} onClick={todoRemoveHandler} />, [todoList]);
+```

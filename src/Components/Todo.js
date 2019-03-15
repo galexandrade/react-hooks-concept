@@ -1,5 +1,6 @@
-import React, { useState, useEffect, useReducer, useRef } from 'react';
+import React, { useState, useEffect, useReducer, useRef, useMemo } from 'react';
 import axios from 'axios';
+import List from './List';
 
 const URL = 'https://todo-tasks-44aaf.firebaseio.com/todos';
 
@@ -14,6 +15,7 @@ const todo = props => {
      */
     //const [todoName, setTodoName] = useState(''); /** Commented due to using `useRef` hook for this purpose */
     //const [todoList, setTodoList] = useState([]); /** Commented due to using useReducer hook for this purpose */
+    const [inputIsValid, setInputIsValid] = useState(false);
 
     /**
      * `useRef` creates a reference to be possible access some HTML element properties later 
@@ -77,6 +79,7 @@ const todo = props => {
         console.log(event.clientX, event.clientY);
     }
 
+    /*
     useEffect(() => {
         console.log('Going to add EventListener');
         document.addEventListener('mousemove', mouseMoveHandler);
@@ -87,6 +90,7 @@ const todo = props => {
             document.removeEventListener('mousemove', mouseMoveHandler);
         }
     });
+    */
 
     /** Commented due to using `useRef` hook for this purpose
     const inputChangeHandler = (event) => {
@@ -125,13 +129,33 @@ const todo = props => {
             .catch(err => console.log(err));
     }
 
+    const inputValidationHandler = (event) => {
+        if(event.target.value.trim() === '')
+            setInputIsValid(false);
+        else
+            setInputIsValid(true);
+    }
+
+    /**
+     * `useMemo` is used to avoid unnecessary rerenders on the component
+     * In this case, the `<List>` component only will be rerendered if the `todoList` is changed
+     * 
+     * It takes two parameters
+     * [0] - The function  returning the element to be rendered
+     * [1] - An array of all the elements that if changed will trigger the function on the first parameter
+     */
+    const listComponent = useMemo(() => <List items={todoList} onClick={todoRemoveHandler} />, [todoList]);
+
     return <React.Fragment>
-        <input type="text" placeholder="Todo" ref={todoInputRef}/>
+        <input 
+            type="text" 
+            placeholder="Todo" 
+            ref={todoInputRef} 
+            onChange={inputValidationHandler}
+            style={{backgroundColor: inputIsValid ? 'transparent' : 'red'}}/>
         <button type="button" onClick={todoAddHandler}>Add</button>
 
-        <ul>
-            {todoList.map(todoItem => <li key={todoItem.id} onClick={todoRemoveHandler.bind(this, todoItem.id)}>{todoItem.name}</li>)}
-        </ul>
+        {listComponent}
     </React.Fragment>
 };
 
