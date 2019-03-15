@@ -45,3 +45,38 @@ useEffect(() => {
     }
 }, []);
 ```
+
+### `useContext`
+
+If you do not know the `React Context` take a look: (https://reactjs.org/docs/context.html)
+`useContext` is used to get the context provided earlier. It is pretty similar the the Redux `mapStateToProps` and `mapDispatchToProps`, but the advantage is that you can get this data inside a functional component.
+
+Step 1 - Create the context (it is not related to the hooks itself)
+```
+const authContext = React.createContext({status: false, login: () => {}});
+```
+
+Step 2 - Provide the context (it is not related to the hooks itself)
+```
+<AuthContext.Provider value={{status: authStatus, login: login}}>
+    ...
+</AuthContext.Provider>
+```
+
+Step 3 - Use the hook to get the context from  a functional component
+```
+import React, { useContext } from 'react';
+import AuthContext from '../auth-context';
+
+const auth = props => {
+    const auth = useContext(AuthContext);
+
+    return (
+        <button onClick={auth.login}>Log In</button> 
+    )
+};
+
+export default auth;
+```
+
+
