@@ -1,16 +1,16 @@
 ## React hooks
 
-Implementing React Hooks (https://reactjs.org/docs/hooks-intro.html) with an app of tasks todo.
+Implementing React Hooks (https://reactjs.org/docs/hooks-intro.html) with a simple todo tasks app.
+
+General conventions
+* Only use at the top of the functional component
+* Only call `useState()` at the root level of the component
 
 ### `useState`
 
 `useState` returns an array with two rows:
 * [0] - The current state
-* [1] - Returns a function to manipulate the state
-
-General conventions
-* Only use at the top of the functional component
-* Only call `useState()` at the root level of the component
+* [1] - A function to manipulate the state
 
 ### `useEffect`
 
@@ -22,7 +22,7 @@ It takes two argumens:
     - To reproduce `componentDidUpdate` use the this as `useEffect(() => console.log('some action'), [someState])`
     - If no second parameter is passed, it will be executed every render cycle
 
-To make a cleanup before running the function again you can return a function  on the callback:
+To make a cleanup before running the function again you can return a function on the callback:
 ```javascript
 useEffect(() => {
     console.log('Going to add EventListener');
@@ -81,7 +81,7 @@ export default auth;
 
 ### `useReducer`
 
-`useReducer` is a new feature to dispatch actions and get access to its state inside a functional component
+`useReducer` is a new feature to dispatch actions and get access to its state inside a functional component.
 It takes three parameters:
 * [0] - The reducer
 * [1] - The initial state
@@ -157,7 +157,7 @@ const listComponent = useMemo(() => <List items={todoList} onClick={todoRemoveHa
 
 ### Custom Hooks \o/
 
-React allow us to create custom hooks using native hooks inside it, whitch is great, because we can share funtionalities across components.
+React allows us to create custom hooks using native hooks inside it, whitch is great, because we can share funtionalities across components.
 Lets take a look in an example:
 
 Step 1 - Create your custom hook
