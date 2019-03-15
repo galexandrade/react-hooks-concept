@@ -154,3 +154,53 @@ In the case bellow, the `<List>` component only will be rerendered if the `todoL
 ```javascript
 const listComponent = useMemo(() => <List items={todoList} onClick={todoRemoveHandler} />, [todoList]);
 ```
+
+### Custom Hooks \o/
+
+React allow us to create custom hooks using native hooks inside it, whitch is great, because we can share funtionalities across components.
+Lets take a look in an example:
+
+Step 1 - Create your custom hook
+In this case it will manage a input field and its validity
+```javascript
+import { useState } from 'react';
+
+//Custom hooks must start with 'use...' to stay in line with React conventions
+export const useFormInput = () => {
+    const [value, setValue] = useState('');
+    const [validity, setValidity] = useState(false);
+
+    const inputChangeHandler = event => {
+        setValue(event.target.value);
+        if (event.target.value.trim() === '')
+            setValidity(false);
+        else
+            setValidity(true);
+    }
+
+    return { 
+        value: value,
+        onChange: inputChangeHandler,
+        validity
+    };
+}
+```
+
+Step 2 - Import it
+```javascript
+import { useFormInput } from '../hooks/forms';
+```
+
+Step 3 - Define your custom hook
+```javascript
+const todoInput = useFormInput();
+```
+
+Step 4 - Use its values and functions available, in this case it is for manage the input field and its validity
+```javascript
+<input 
+    type="text" 
+    onChange={todoInput.onChange}
+    value={todoInput.value}
+    style={{backgroundColor: todoInput.validity ? 'transparent' : 'red'}}/>
+```

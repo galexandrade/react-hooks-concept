@@ -2,6 +2,9 @@ import React, { useState, useEffect, useReducer, useRef, useMemo } from 'react';
 import axios from 'axios';
 import List from './List';
 
+//Importing a custom hook
+import { useFormInput } from '../hooks/forms';
+
 const URL = 'https://todo-tasks-44aaf.firebaseio.com/todos';
 
 const todo = props => {
@@ -15,12 +18,13 @@ const todo = props => {
      */
     //const [todoName, setTodoName] = useState(''); /** Commented due to using `useRef` hook for this purpose */
     //const [todoList, setTodoList] = useState([]); /** Commented due to using useReducer hook for this purpose */
-    const [inputIsValid, setInputIsValid] = useState(false);
+    //const [inputIsValid, setInputIsValid] = useState(false);
+    const todoInput = useFormInput();
 
     /**
      * `useRef` creates a reference to be possible access some HTML element properties later 
      */
-    const todoInputRef = useRef();
+    //const todoInputRef = useRef(); /** Commented due to using custom hook for this purpose */ 
 
     // This is the reducer, pretty similar to Redux
     const todoListReducer = (state, action) => {
@@ -100,7 +104,10 @@ const todo = props => {
 
     const todoAddHandler = () => {
         // `todoInputRef.current` gets the current HTML properties
-        let todoName = todoInputRef.current.value;
+        //let todoName = todoInputRef.current.value;
+
+        let todoName = todoInput.value;
+
         axios.post(URL + '.json', {name: todoName})
             .then(res => {
                 console.log(res);
@@ -129,12 +136,14 @@ const todo = props => {
             .catch(err => console.log(err));
     }
 
+    /* Commented due to using custom hook for this purpose
     const inputValidationHandler = (event) => {
         if(event.target.value.trim() === '')
             setInputIsValid(false);
         else
             setInputIsValid(true);
     }
+    */
 
     /**
      * `useMemo` is used to avoid unnecessary rerenders on the component
@@ -150,9 +159,9 @@ const todo = props => {
         <input 
             type="text" 
             placeholder="Todo" 
-            ref={todoInputRef} 
-            onChange={inputValidationHandler}
-            style={{backgroundColor: inputIsValid ? 'transparent' : 'red'}}/>
+            onChange={todoInput.onChange}
+            value={todoInput.value}
+            style={{backgroundColor: todoInput.validity ? 'transparent' : 'red'}}/>
         <button type="button" onClick={todoAddHandler}>Add</button>
 
         {listComponent}
