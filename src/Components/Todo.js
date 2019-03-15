@@ -57,14 +57,14 @@ const todo = props => {
     }
 
     const todoAddHandler = () => {
-        setTodoList(todoList.concat({
-            id: todoList.length + 1,
-            name: todoName
-        }));
-        
         axios.post('https://todo-tasks-44aaf.firebaseio.com/todos.json', {name: todoName})
             .then(res => {
                 console.log(res);
+                const todoItem = {
+                    id: res.data.name,
+                    name: todoName
+                }
+                setTodoList(todoList.concat(todoItem));
             })
             .catch(err => {
                 console.log(err);
