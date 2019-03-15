@@ -23,7 +23,7 @@ It takes two argumens:
     - If no second parameter is passed, it will be executed every render cycle
 
 To make a cleanup before running the function again you can return a function  on the callback:
-```
+```javascript
 useEffect(() => {
     console.log('Going to add EventListener');
     document.addEventListener('mousemove', mouseMoveHandler);
@@ -37,7 +37,7 @@ useEffect(() => {
 ```
 
 To reproduce the behavior of the `componentDidUnmount` use:
-```
+```javascript
 useEffect(() => {
     //This will be executed when the component is unmounted
     return () => {
@@ -52,19 +52,19 @@ If you do not know the `React Context` take a look: (https://reactjs.org/docs/co
 `useContext` is used to get the context provided earlier. It is pretty similar the the Redux `mapStateToProps` and `mapDispatchToProps`, but the advantage is that you can get this data inside a functional component.
 
 Step 1 - Create the context (it is not related to the hooks itself)
-```
+```javascript
 const authContext = React.createContext({status: false, login: () => {}});
 ```
 
 Step 2 - Provide the context (it is not related to the hooks itself)
-```
+```javascript
 <AuthContext.Provider value={{status: authStatus, login: login}}>
     ...
 </AuthContext.Provider>
 ```
 
 Step 3 - Use the hook to get the context from  a functional component
-```
+```javascript
 import React, { useContext } from 'react';
 import AuthContext from '../auth-context';
 
@@ -92,7 +92,7 @@ It returns an array with two elements:
 * [1] - The dispatch function to emmit actions
 
 Step 1 - Define the reducer function
-```
+```javascript
 const todoListReducer = (state, action) => {
     switch (action.type) {
         case 'ADD':
@@ -108,12 +108,12 @@ const todoListReducer = (state, action) => {
 ```
 
 Step 2 - Call `useReducer` hook
-```
+```javascript
 const [todoList, dispatch] = useReducer(todoListReducer, []);
 ```
 
 Step 3 - Dispatch actions
-```
+```javascript
 dispatch({
     type: 'ADD',
     payload: todoItem
@@ -125,17 +125,17 @@ dispatch({
 `useRef` creates a reference to be possible access some HTML element properties later 
 
 Step 1 - Create the reference
-```
+```javascript
 const todoInputRef = useRef();
 ```
 
 Step 2 - Hook it up on the HTML element you want to reference
-```
+```javascript
 <input type="text" placeholder="Todo" ref={todoInputRef}/>
 ```
 
 Step 3 - Access properties of the referencied element
-```
+```javascript
 const todoAddHandler = () => {
     // `todoInputRef.current` gets the current HTML properties
     let todoName = todoInputRef.current.value;
